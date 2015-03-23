@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sean on 3/14/2015.
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 public class RepoActivity extends Activity {
 
     private ArrayList<String> repos;
+    private ArrayList<String> forks_count;
     private String user;
     private Context context;
     private Dialog dialog;
@@ -34,6 +36,7 @@ public class RepoActivity extends Activity {
 
         this.repos = getIntent().getStringArrayListExtra("repos");
         this.user = getIntent().getStringExtra("user");
+        this.forks_count = getIntent().getStringArrayListExtra("forks_count");
         dialog = new Dialog(RepoActivity.this);
         textView1 = new TextView(RepoActivity.this);
 
@@ -41,11 +44,20 @@ public class RepoActivity extends Activity {
     }
 
     public void showRepos() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.repo_layout, R.id.repo_name_text, repos);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.repo_layout, R.id.repo_name_text, repos);
 
         ListView list = (ListView) findViewById(R.id.repo_ListView);
-        list.setAdapter(adapter);
+        List<RepoListItem> items = new ArrayList<RepoListItem>();
 
+        //Set up custom list. This should change how it is generated... Just testing!!!!
+        //This could very easily throw null pointers.
+        for(int i = 0; i < repos.size(); i++) {
+            items.add(new RepoListItem(list.getId(), repos.get(i), forks_count.get(i)));
+        }
+
+        RepoAdapter adapter = new RepoAdapter(this, R.layout.repo_layout, items);
+
+        list.setAdapter(adapter);
         list.invalidateViews();
 
         // Get some extra information if you click on a repo
@@ -60,6 +72,26 @@ public class RepoActivity extends Activity {
                 task.execute(info);
             }
         });
+    }
+
+    public class RepoListItem{
+        public int resource;
+        public String repo;
+        public String fork_count;
+
+        public RepoListItem(int resource, String repo, String fork_count){
+            this.resource = resource;
+            this.repo = repo;
+            this.fork_count = fork_count;
+        }
+
+        public String getRepo(){
+            return repo;
+        }
+
+        public String getForkCount(){
+            return fork_count;
+        }
     }
 
     private class GetRepoStatTask extends AsyncTask<String, Void, Void>{

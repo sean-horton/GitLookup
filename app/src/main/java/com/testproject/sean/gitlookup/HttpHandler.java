@@ -6,6 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -29,7 +30,7 @@ public class HttpHandler {
     /*
     @return true if connection works
      */
-    public String getFromGit(String address){
+    public JSONArray getFromGit(String address){
         BufferedReader in = null;
         String data = "";
 
@@ -50,20 +51,27 @@ public class HttpHandler {
             }
             in.close();
             data = sb.toString();
-            return data;
+
         } catch(Exception e){
             e.printStackTrace();
         } finally {
             if (in != null){
                 try {
                     in.close();
-                    return data;
                 } catch (Exception e){
                     e.printStackTrace();
                 }
             }
         }
-        return data;
+
+        try {
+            JSONArray json = new JSONArray(data);
+            return json;
+        } catch(Exception e){
+            System.out.println(e);
+        }
+
+        return null;
     }
 
     public String searchGitUsers(String user, int page){
@@ -88,14 +96,13 @@ public class HttpHandler {
             }
             in.close();
             data = sb.toString();
-            return data;
+
         } catch(Exception e){
             e.printStackTrace();
         } finally {
             if (in != null){
                 try {
                     in.close();
-                    return data;
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -126,14 +133,13 @@ public class HttpHandler {
             }
             in.close();
             data = sb.toString();
-            return data;
+
         } catch(Exception e){
             e.printStackTrace();
         } finally {
             if (in != null){
                 try {
                     in.close();
-                    return data;
                 } catch (Exception e){
                     e.printStackTrace();
                 }

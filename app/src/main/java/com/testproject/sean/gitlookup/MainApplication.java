@@ -25,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class MainApplication extends Activity {
     private HttpHandler httpHandler = new HttpHandler();
     private Context context;
     private ArrayList<String> repos = new ArrayList<String>();
+    private ArrayList<String> forksCount = new ArrayList<String>();
     private ArrayList<String> users = new ArrayList<String>();
     private LinearLayout progressBar = null;
     private ListView list = null;
@@ -168,6 +171,7 @@ public class MainApplication extends Activity {
 
         Intent intent = new Intent(getApplicationContext(), RepoActivity.class);
         intent.putStringArrayListExtra("repos", repos);
+        intent.putStringArrayListExtra("forks_count", forksCount);
         intent.putExtra("user", user);
         startActivity(intent);
 
@@ -262,6 +266,8 @@ public class MainApplication extends Activity {
     private class GetRepoTask extends AsyncTask<String, Void, Void>{
 
         private String user;
+        private ArrayList<String> reposTemp = new ArrayList<String>();
+        private ArrayList<String> forksTemp = new ArrayList<String>();
 
         @Override
         protected void onPreExecute(){
@@ -274,19 +280,15 @@ public class MainApplication extends Activity {
 
                 this.user = user[0];
                 String address = "/users/" + user[0] + "/repos";
-                String result = httpHandler.getFromGit(address);
+                JSONArray result = httpHandler.getFromGit(address);
 
-                System.out.println(result);
+                System.out.println(result.toString());
 
-                //Grab all occurances of repos
-                String findName = ",\"name\":";
-
-                while (result.contains(findName)) {
-                    result = result.substring(result.indexOf(findName) + 9);
-                    String aRepo = result.substring(0, result.indexOf("\""));
-
-                    repos.add(aRepo);
-                    System.out.println(aRepo);
+                JSONObject obj;
+                for(int i = 0; i < result.length(); i++){
+                    obj = result.getJSONObject(i);
+                    reposTemp.add(obj.get("name").toString());
+                    forksTemp.add(obj.get("forks_count").toString());
                 }
 
             } catch (Exception e) {
@@ -301,6 +303,9 @@ public class MainApplication extends Activity {
 
             progressBar.startAnimation(fadeOutAnimation);
             progressBar.setVisibility(View.GONE);
+
+            repos = reposTemp;
+            forksCount = forksTemp;
 
             if(repos.size() >= 1) {
                 updateReposUi(user);
