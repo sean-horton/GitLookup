@@ -1,17 +1,14 @@
-package com.testproject.sean.gitlookup;
+package com.testproject.sean.gitlookup.Adapters;
 
-import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.testproject.sean.gitlookup.Activities.RepoActivity;
+import com.testproject.sean.gitlookup.R;
 
 import java.util.List;
 

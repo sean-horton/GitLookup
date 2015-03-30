@@ -1,4 +1,4 @@
-package com.testproject.sean.gitlookup;
+package com.testproject.sean.gitlookup.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,13 +6,18 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.testproject.sean.gitlookup.Backend.HttpHandler;
+import com.testproject.sean.gitlookup.R;
+import com.testproject.sean.gitlookup.Adapters.RepoAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +42,13 @@ public class RepoActivity extends Activity {
         this.repos = getIntent().getStringArrayListExtra("repos");
         this.user = getIntent().getStringExtra("user");
         this.forks_count = getIntent().getStringArrayListExtra("forks_count");
+        context = this.getApplicationContext();
         dialog = new Dialog(RepoActivity.this);
         textView1 = new TextView(RepoActivity.this);
+
+        //set username at top of activity
+        TextView username = (TextView) findViewById(R.id.textview_activity_username);
+        username.setText("User: " + user);
 
         showRepos();
     }
@@ -51,8 +61,10 @@ public class RepoActivity extends Activity {
 
         //Set up custom list. This should change how it is generated... Just testing!!!!
         //This could very easily throw null pointers.
-        for(int i = 0; i < repos.size(); i++) {
-            items.add(new RepoListItem(list.getId(), repos.get(i), forks_count.get(i)));
+        if(repos != null) {
+            for (int i = 0; i < repos.size(); i++) {
+                items.add(new RepoListItem(list.getId(), repos.get(i), forks_count.get(i)));
+            }
         }
 
         RepoAdapter adapter = new RepoAdapter(this, R.layout.repo_layout, items);
@@ -64,15 +76,35 @@ public class RepoActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int pos, long id) {
+
+            //If the repo has commits
+            TextView tempView = (TextView) viewClicked.findViewById(R.id.forks_count_text);
+            String forksCount = tempView.getText().toString();
+            System.out.println("forks Count = " + forksCount);
+            if(forksCount.compareTo("0") != 0) {
                 TextView textView = (TextView) viewClicked.findViewById(R.id.repo_name_text);
 
-                String[] info = {user, textView.getText().toString()};
-                GetRepoStatTask task = new GetRepoStatTask();
+                //Create a new activity
+                Intent intent = new Intent(getApplicationContext(), CommitActivity.class);
+                intent.putExtra("repo", textView.getText().toString());
+                intent.putExtra("user", user);
+                startActivity(intent);
 
-                task.execute(info);
+                //String[] info = {user, textView.getText().toString()};
+                //GetRepoStatTask task = new GetRepoStatTask();
+
+                //task.execute(info);
+            } else {
+                // say there is nothing to display
+                Toast.makeText(context, "This repo has no commits.", Toast.LENGTH_LONG).show();
+            }
             }
         });
     }
+
+
+
+
 
     public class RepoListItem{
         public int resource;
@@ -125,6 +157,7 @@ public class RepoActivity extends Activity {
             dialog.setContentView(textView1);
 
             dialog.show();
+
         }
 
         private String formatStats(String stats){

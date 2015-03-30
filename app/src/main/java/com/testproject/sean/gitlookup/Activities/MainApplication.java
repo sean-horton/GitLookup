@@ -1,7 +1,6 @@
-package com.testproject.sean.gitlookup;
+package com.testproject.sean.gitlookup.Activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -20,11 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.protocol.HTTP;
+import com.testproject.sean.gitlookup.Backend.HttpHandler;
+import com.testproject.sean.gitlookup.R;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 

@@ -12,7 +12,7 @@
         android:debuggable="true">
 
         <activity
-            android:name=".MainApplication"
+            android:name=".Activities.MainApplication"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RepoActivity"></activity>
+        <activity android:name=".Activities.RepoActivity"></activity>
+        <activity android:name=".Activities.CommitActivity"></activity>
     </application>
 
 </manifest>

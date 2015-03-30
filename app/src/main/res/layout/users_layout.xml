@@ -13,19 +13,6 @@
         android:layout_gravity="center"
         android:paddingLeft="12dp"
         android:layout_weight="1"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/icon_test" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:layout_gravity="center"
-        android:paddingRight="12dp"/>
-
 </LinearLayout>
 
 
